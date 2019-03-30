@@ -9,6 +9,7 @@ A boilerplate for Gulp 4 to help you build web projects.
 - Optimize images (PNG, JPEG, GIF and SVG)
 - Generate sprite images
 - Copy font files
+- Watch for changes
 
 ## Install
 Create a `.env` file to set your environment variables (REQUIRED)
