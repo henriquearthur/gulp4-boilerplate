@@ -15,21 +15,8 @@ const { watcher } = require('./watcher');
 
 exports.default = series(
     clean,
-    //browserSync,
+    browserSync,
     sprites,
     parallel(images, pluginsImages, pluginsJavascript, pluginsCss, javascriptConcat, javascriptEach, scss, fonts),
     watcher
 );
-
-/*
-gulp.task('default', function(callback) {
-    runSequence(
-        'clean',
-        'browserSync',
-        ['build:sprites', 'build:images'],
-        ['build:pluginsCSS', 'build:pluginsJS', 'build:pluginsIMG', 'build:scss', 'build:js', 'build:fonts'],
-        'watch',
-        callback
-        );
-});
-*/
