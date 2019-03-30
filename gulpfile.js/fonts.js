@@ -16,18 +16,17 @@ const plumber = require('gulp-plumber');
 const notify = require("gulp-notify");
 const newer = require('gulp-newer');
 const gulpif = require('gulp-if');
-const imagemin = require('gulp-imagemin');
 
 /**
  * Task
  */
-function images() {
-    return src(paths.src.images)
+function fonts() {
+    return src(paths.src.fonts)
         .pipe(plumber({
             errorHandler: function(err) {
                 if (process.env.ENVIRONMENT == 'development') {
                     notify.onError({
-                        title: "Error on: images",
+                        title: "Error on: fonts",
                         message: "<%= error %>"
                     })(err);
                 } else if (process.env.ENVIRONMENT == 'production') {
@@ -37,10 +36,9 @@ function images() {
                 this.emit('end');
             }
         }))
-        .pipe(newer(paths.dist.images))
-        .pipe(gulpif(process.env.ENVIRONMENT == 'production', imagemin()))
-        .pipe(dest(paths.dist.images))
+        .pipe(newer(paths.dist.fonts))
+        .pipe(dest(paths.dist.fonts))
         .pipe(gulpif(process.env.ENVIRONMENT == 'development', bs.stream()));
 }
 
-exports.images = images;
+exports.fonts = fonts;

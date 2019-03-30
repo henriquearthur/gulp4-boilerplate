@@ -11,6 +11,8 @@ const paths = {
         fonts: 'web/assets/fonts/**/*.{eot,ttf,woff,woff2}',
         images: 'web/assets/images/**/*.{png,jpg,jpeg,gif,bmp}',
         scripts: 'web/assets/js/**/*.js',
+        scriptsEach: 'web/assets/js/**/[^_]*.js',
+        scriptsConcat: 'web/assets/js/**/_*.js',
         pluginsCSS: ['web/assets/plugins-css/**/*.css'],
         pluginsJS: ['web/assets/plugins-js/**/*.js'],
         pluginsIMG: 'web/assets/plugins-images/**/*.{png,jpg,jpeg,gif,bmp}',

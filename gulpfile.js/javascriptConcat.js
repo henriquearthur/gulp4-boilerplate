@@ -16,18 +16,20 @@ const plumber = require('gulp-plumber');
 const notify = require("gulp-notify");
 const newer = require('gulp-newer');
 const gulpif = require('gulp-if');
-const imagemin = require('gulp-imagemin');
+const sourcemaps = require('gulp-sourcemaps');
+const concat = require("gulp-concat");
+const uglify = require('gulp-uglify-es').default;
 
 /**
  * Task
  */
-function images() {
-    return src(paths.src.images)
+function javascriptConcat() {
+    return src(paths.src.scriptsConcat)
         .pipe(plumber({
             errorHandler: function(err) {
                 if (process.env.ENVIRONMENT == 'development') {
                     notify.onError({
-                        title: "Error on: images",
+                        title: "Error on: javascriptConcat",
                         message: "<%= error %>"
                     })(err);
                 } else if (process.env.ENVIRONMENT == 'production') {
@@ -37,10 +39,13 @@ function images() {
                 this.emit('end');
             }
         }))
-        .pipe(newer(paths.dist.images))
-        .pipe(gulpif(process.env.ENVIRONMENT == 'production', imagemin()))
-        .pipe(dest(paths.dist.images))
+        .pipe(newer(paths.dist.scripts))
+        .pipe(gulpif(process.env.ENVIRONMENT == 'development', sourcemaps.init()))
+        .pipe(uglify())
+        .pipe(concat('app.js'))
+        .pipe(gulpif(process.env.ENVIRONMENT == 'development', sourcemaps.write('./')))
+        .pipe(dest(paths.dist.scripts))
         .pipe(gulpif(process.env.ENVIRONMENT == 'development', bs.stream()));
 }
 
-exports.images = images;
+exports.javascriptConcat = javascriptConcat;

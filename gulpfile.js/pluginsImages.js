@@ -13,6 +13,7 @@ const {
 } = require('gulp');
 
 const plumber = require('gulp-plumber');
+const notify = require("gulp-notify");
 const newer = require('gulp-newer');
 const gulpif = require('gulp-if');
 const imagemin = require('gulp-imagemin');
@@ -22,7 +23,20 @@ const imagemin = require('gulp-imagemin');
  */
 function pluginsImages() {
     return src(paths.src.pluginsIMG)
-        .pipe(plumber())
+        .pipe(plumber({
+            errorHandler: function(err) {
+                if (process.env.ENVIRONMENT == 'development') {
+                    notify.onError({
+                        title: "Error on: pluginsImages",
+                        message: "<%= error %>"
+                    })(err);
+                } else if (process.env.ENVIRONMENT == 'production') {
+                    console.error(err);
+                }
+
+                this.emit('end');
+            }
+        }))
         .pipe(newer(paths.dist.images))
         .pipe(gulpif(process.env.ENVIRONMENT == 'production', imagemin()))
         .pipe(dest(paths.dist.images))

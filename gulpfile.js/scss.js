@@ -17,21 +17,21 @@ const notify = require("gulp-notify");
 const newer = require('gulp-newer');
 const gulpif = require('gulp-if');
 const sourcemaps = require('gulp-sourcemaps');
-const concat = require("gulp-concat");
+const sass = require('gulp-sass');
+sass.compiler = require('node-sass');
 const postcss = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
-const cssnano = require('cssnano');
 
 /**
  * Task
  */
-function pluginsCss() {
-    return src(paths.src.pluginsCSS)
+function scss() {
+    return src(paths.src.scss)
         .pipe(plumber({
             errorHandler: function(err) {
                 if (process.env.ENVIRONMENT == 'development') {
                     notify.onError({
-                        title: "Error on: pluginsCss",
+                        title: "Error on: scss",
                         message: "<%= error %>"
                     })(err);
                 } else if (process.env.ENVIRONMENT == 'production') {
@@ -43,16 +43,19 @@ function pluginsCss() {
         }))
         .pipe(newer(paths.dist.css))
         .pipe(gulpif(process.env.ENVIRONMENT == 'development', sourcemaps.init()))
-        .pipe(concat('vendor.css'))
+        .pipe(gulpif(process.env.ENVIRONMENT == 'production', sass({
+            outputStyle: 'compressed'
+        }).on('error', sass.logError), sass({
+            outputStyle: 'expanded'
+        }).on('error', sass.logError)))
         .pipe(gulpif(process.env.ENVIRONMENT == 'production', postcss([
             autoprefixer({
                 browsers: ['last 1 version']
-            }),
-            cssnano()
+            })
         ])))
         .pipe(gulpif(process.env.ENVIRONMENT == 'development', sourcemaps.write('./')))
         .pipe(dest(paths.dist.css))
         .pipe(gulpif(process.env.ENVIRONMENT == 'development', bs.stream()));
 }
 
-exports.pluginsCss = pluginsCss;
+exports.scss = scss;
